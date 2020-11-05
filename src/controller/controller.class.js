@@ -12,6 +12,18 @@ class Controller {
         document.getElementById('new-prod').setAttribute('novalidate', 'novalidate');
         // Y ponemos los listeners
         this._setListeners();  // el _ del nombre indica que sólo se usa dentro de esta clase
+        // Y cargamos los datos de la API
+        this.store.getProducts()
+        .then((products) => {
+            products.forEach((product) => {
+                this.view.renderNewProduct(product);
+                this._setProductListeners(product);
+                this.view.renderStoreImport(this.store.totalImport());
+            })
+        })
+        .catch((error) => {
+            this.view.renderErrorMessage(error);
+        })
     }
 
     _setListeners() {
@@ -34,8 +46,11 @@ class Controller {
             const name = document.getElementById('newprod-name').value;
             const units = document.getElementById('newprod-units').value;
             const price = document.getElementById('newprod-price').value; 
-            const formData = { name, price: Number(price) };
-            if (units) formData.units = Number(units);
+            const formData = { 
+                name,
+                units: Number(units) || 0,
+                price: Number(price) 
+            };
             if (id) {
                 formData.id = Number(id);
                 this.changeProductInStore(formData);
@@ -92,10 +107,13 @@ class Controller {
         } else {
             // El nombre es válido, vamos a ver si está repetido (y no es este, para lo que cogemos su id)
             const formId = Number(document.getElementById('newprod-id').value);
-            if (this.store.products.find(product => product.name === inputNameUI.value && product.id !== formId)) {
-                // Le ponemos un error personalizado
-                inputNameUI.setCustomValidity('Ya existe un producto con ese nombre');
-            }
+            this.store.getProductsByName(inputNameUI.value)
+            .then((products) => {
+                if (products.find(product => product.name === inputNameUI.value && product.id !== formId)) {
+                    // Le ponemos un error personalizado
+                    inputNameUI.setCustomValidity('Ya existe un producto con ese nombre');
+                }
+            })
         }
         this.view.renderInputError(inputNameUI);
     }
@@ -104,12 +122,12 @@ class Controller {
         // Ponemos los listeners para los 4 botones que se han creado
         const btnIncrease = document.querySelector('#prod-' + product.id + ' .increase');
         btnIncrease.addEventListener('click', () => {
-            this.changeProductStock(product.id, 1);            
+            this.changeProductStock(product, 1);            
         })
 
         const btnDecrease = document.querySelector('#prod-' + product.id + ' .decrease');
         btnDecrease.addEventListener('click', () => {
-            this.changeProductStock(product.id, -1);            
+            this.changeProductStock(product, -1);            
         })
 
         const btnEdit = document.querySelector('#prod-' + product.id + ' .edit');
@@ -126,83 +144,70 @@ class Controller {
     addProductToStore(formData) {
         // No comprobamos que los datos sean correctos porque lo hace la clase Store.
 
-        try {
-            var product = this.store.addProduct(formData)
-        } catch (err) {
-            this.view.renderErrorMessage(err);
-            return;
-        }
-        this.view.renderNewProduct(product);
-        this._setProductListeners(product);
-        this.view.renderStoreImport(this.store.totalImport());
-        this.view.renderAddForm(); 
+        this.store.addProduct(formData)
+        .then((product) => {
+            this.view.renderNewProduct(product);
+            this._setProductListeners(product);
+            this.view.renderStoreImport(this.store.totalImport());
+            this.view.renderAddForm();     
+        })
+        .catch((error) => {
+            this.view.renderErrorMessage(error);
+        })
     }
 
     deleteProductFromStore(prodId) {
         // Debemos obtener el producto para pedir confirmación
-        let product = this.store.findProduct(Number(prodId));
-        if (!product) {
-            this.view.renderErrorMessage('No hay ningún producto con id ' + prodId);
-            return;
-        }
-
-        if (confirm(`Deseas borrar el producto "${product.name}" con id ${product.id}?`)) {
-            if (product.units) {
-                // Si tiene unidades hay que pedir una segunda confirmación
-                if (confirm(`Ese producto aún tiene ${product.units} uds. que desaparecerán. Deseas continuar?`)) {
-                    // Eliminamos sus unidades
-                    try {
-                        product = this.store.changeProductUnits({
-                            id: product.id,
-                            units: -product.units
-                        });
-                    } catch (err) {
-                        this.view.renderErrorMessage(err);
-                        return;
-                    }
-                } else {
-                    return;     // No se hace nada
-                }
-            }            
-
-            try {
-                this.store.delProduct(Number(prodId));
-            } catch (err) {
-                this.view.renderErrorMessage(err);
+        this.store.findProduct(Number(prodId))
+        .then((product) => {
+            if (!product) {
+                this.view.renderErrorMessage('No hay ningún producto con id ' + prodId);
                 return;
             }
+    
+            if (confirm(`Deseas borrar el producto "${product.name}" con id ${product.id}?`)) {
+                if (product.units) {
+                    // Si tiene unidades hay que pedir una segunda confirmación
+                    if (!confirm(`Ese producto aún tiene ${product.units} uds. que desaparecerán. Deseas continuar?`)) {
+                        return;     // No se hace nada
+                    }
+                }
 
-            this.view.renderDelProduct(prodId);
-            this.view.renderStoreImport(this.store.totalImport());
-        }
+                this.store.delProduct(Number(prodId))
+                .then((product) => {
+                    this.view.renderDelProduct(prodId);
+                    this.view.renderStoreImport(this.store.totalImport());
+                })
+                .catch((error) => {
+                    this.view.renderErrorMessage(error);
+                })
+            }
+        })
+        .catch((error) => {
+            this.view.renderErrorMessage(error);
+        });
     }
 
     changeProductInStore(formData) {
-        try {
-            var prodModified = this.store.changeProduct(formData);
-        } catch (err) {
-            this.view.renderErrorMessage(err);
-            return;
-        }
-        this.view.renderEditProduct(prodModified);
-        this._setProductListeners(prodModified);
-        this.view.renderStoreImport(this.store.totalImport());
-        this.view.renderAddForm();
+        this.store.changeProduct(formData)
+        .then((product) => {
+            this.view.renderEditProduct(product);
+            this._setProductListeners(product);
+            this.view.renderStoreImport(this.store.totalImport());
+            this.view.renderAddForm();
+        })
+        .catch((error) => {
+            this.view.renderErrorMessage(error);
+        })
     }
 
-    changeProductStock(prodId, unitsToIncrease) {
-        try {
-            var product = this.store.changeProductUnits({
-                id: Number(prodId),
-                units: Number(unitsToIncrease)
+    changeProductStock(prod, unitsToIncrease) {
+        this.changeProductInStore({
+                id: prod.id,
+                name: prod.name,
+                units: prod.units + Number(unitsToIncrease),
+                price: prod.price
             })
-        } catch (err) {
-            this.view.renderErrorMessage(err);
-            return;
-        }
-        this.view.renderChangeStock(product);
-        // Como no borro los botones conservan sus listeners
-        this.view.renderStoreImport(this.store.totalImport());
     }
 }
 

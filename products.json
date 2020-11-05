@@ -1,0 +1,16 @@
+{
+  "products": [
+    {
+      "name": "Tv Samsung",
+      "units": 0,
+      "price": 245.95,
+      "id": 1
+    },
+    {
+      "name": "Abaco de madera",
+      "units": 0,
+      "price": 12.5,
+      "id": 2
+    }
+  ]
+}

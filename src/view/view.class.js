@@ -33,7 +33,7 @@ class View{
         // Buscamos el producto
         const productUI = document.getElementById('prod-'+product.id);
         productUI.children[2].textContent = product.units;
-        productUI.children[4].textContent = product.productImport().toFixed(2)+' €';
+        productUI.children[4].textContent = (product.units * product.price).toFixed(2)+' €';
         // Si tiene unidades no debe estar deshabilitado el btn de reducir uds
         if (product.units) {
             productUI.querySelector('.decrease').removeAttribute('disabled');
@@ -90,7 +90,7 @@ class View{
             <td>${product.name}</td>
             <td>${product.units}</td>
             <td>${product.price}</td>
-            <td>${product.productImport().toFixed(2)} €</td>
+            <td>${(product.units * product.price).toFixed(2)} €</td>
             <td>
                 <button class="btn btn-dark increase">
                     <span class="material-icons">arrow_drop_up</span>
