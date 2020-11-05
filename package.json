@@ -1,0 +1,19 @@
+{
+  "name": "3.1-poo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.12"
+  }
+}
