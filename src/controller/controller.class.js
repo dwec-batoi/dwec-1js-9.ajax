@@ -166,13 +166,13 @@ class Controller {
             }            
 
             try {
-                product = this.store.delProduct(Number(prodId));
+                this.store.delProduct(Number(prodId));
             } catch (err) {
                 this.view.renderErrorMessage(err);
                 return;
             }
 
-            this.view.renderDelProduct(product.id);
+            this.view.renderDelProduct(prodId);
             this.view.renderStoreImport(this.store.totalImport());
         }
     }

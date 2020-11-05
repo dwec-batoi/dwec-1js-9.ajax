@@ -7,9 +7,6 @@ class Product {
     }
 
     changeUnits(units) {
-        if (this.units + units < 0) {
-	        throw new Error(`Quedan ${this.units} y quieres sumarle ${units}`);
-        }
         this.units += units;
         return this;
     }

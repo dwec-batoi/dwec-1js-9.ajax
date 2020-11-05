@@ -11,20 +11,6 @@ class Store {
     }
 
     addProduct(datosProd) {
-        // Comprobamos que los datos sean correctos
-        if (!datosProd.name) {
-            throw `Debes indicar el nombre del producto`;
-        }
-        if (!datosProd.price) {
-            throw `Debes indicar el precio del producto`;
-        }
-        if (datosProd.price < 0 || parseFloat(datosProd.price) !== datosProd.price) {
-            throw `El precio debe ser un número positivo (${datosProd.price})`;
-        }
-        if (datosProd.units && (datosProd.units < 0 || parseInt(datosProd.units) !== datosProd.units)) {
-            throw `Las unidades deben ser un nº entero positivo (${datosProd.units})`;
-        }
-
         datosProd.id = getId(this.products);
         let newProd = new Product(datosProd.id, datosProd.name, datosProd.price, datosProd.units);
         this.products.push(newProd);
@@ -32,31 +18,11 @@ class Store {
     }
 
     delProduct(id) {
-        let prod = {};
-        try {
-            prod = this.findProduct(id);
-        } catch(err) {
-            throw err;
-        }
-        if (prod.units) {
-            throw `Al producto con id ${id} aún le quedan ${prod.units} unidades`;
-        }
         this.products = this.products.filter((item) => item.id !== id);
-        return prod;
+        // Ya no devuelve nada
     }
 
     changeProductUnits(datosProd) {
-        // Comprobamos que los datos sean correctos
-        if (!datosProd.id) {
-            throw `Debes indicar la id del producto`;
-        }
-        if (!datosProd.units) {
-            throw `Debes indicar las unidades del producto`;
-        }
-        if (parseInt(datosProd.units) !== datosProd.units) {
-            throw `Las unidades deben ser un nº entero (${datosProd.units})`;
-        }
-
         let prod = {};
         try {
             prod = this.findProduct(datosProd.id);
@@ -75,17 +41,6 @@ class Store {
     }
 
     changeProduct(datosProd) {
-        // Comprobamos que los datos sean correctos
-        if (!datosProd.id) {
-            throw `Debes indicar la id del producto`;
-        }   
-        if (datosProd.units && (datosProd.units < 0 || parseInt(datosProd.units) !== datosProd.units)) {
-            throw `Las unidades deben ser un nº entero positivo (${datosProd.units})`;
-        }
-        if (datosProd.price && (datosProd.price < 0 || parseFloat(datosProd.price) !== datosProd.price)) {
-            throw `El precio debe ser un número positivo (${datosProd.price})`;
-        }
-
         let prod = {};
         try {
             prod = this.findProduct(datosProd.id);
