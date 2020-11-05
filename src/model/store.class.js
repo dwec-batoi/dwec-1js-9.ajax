@@ -11,6 +11,28 @@ class Store {
         return this.products.find((prod) => prod.id === id);
     }
 
+    getProducts(renderProd, setListeners) {
+        const peticion = new XMLHttpRequest();
+        peticion.open('GET', SERVER + '/products');
+        peticion.send();
+        peticion.addEventListener('load', () => {
+          if (peticion.status === 200) {
+            const datos = JSON.parse(peticion.responseText);
+            datos.forEach((dato) => {
+                const newProd = new Product(dato.id, dato.name, dato.price, dato.units);
+                this.products.push(newProd);
+                renderProd(newProd);
+                setListeners(newProd);    
+            })
+          } else {
+            throw "Error " + peticion.status + " (" + peticion.statusText + ") en la petición";
+          }
+        })
+        peticion.addEventListener('error', () => {
+            throw 'Error en la petición HTTP';
+        });
+    }
+
     addProduct(datosProd, renderProd, setListeners) {
         const peticion = new XMLHttpRequest();
         peticion.open('POST', SERVER + '/products');

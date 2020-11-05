@@ -12,6 +12,9 @@ class Controller {
         document.getElementById('new-prod').setAttribute('novalidate', 'novalidate');
         // Y ponemos los listeners
         this._setListeners();  // el _ del nombre indica que sólo se usa dentro de esta clase
+        // Y cargamos los datos de la API
+        this.store.getProducts(this.view.renderNewProduct, 
+            this._setProductListeners.bind(this));
     }
 
     _setListeners() {
