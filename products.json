@@ -1,0 +1,94 @@
+{
+  "products": [
+    {
+      "name": "qwe123",
+      "price": 12,
+      "id": 1
+    },
+    {
+      "name": "qwe123",
+      "price": 12,
+      "id": 2
+    },
+    {
+      "name": "qweqwe",
+      "price": 123,
+      "id": 3
+    },
+    {
+      "name": "qweqwe",
+      "price": 123,
+      "id": 4
+    },
+    {
+      "name": "qweqwe",
+      "price": 123,
+      "id": 5
+    },
+    {
+      "name": "qweqwe",
+      "price": 123,
+      "id": 6
+    },
+    {
+      "name": "qweqwe",
+      "price": 123,
+      "id": 7
+    },
+    {
+      "name": "qwewe",
+      "price": 123,
+      "id": 8
+    },
+    {
+      "name": "qweqwe",
+      "price": 123,
+      "id": 9
+    },
+    {
+      "name": "asdaasd",
+      "price": 12,
+      "id": 10
+    },
+    {
+      "name": "aaaaaa",
+      "price": 1231,
+      "id": 11
+    },
+    {
+      "name": "aaaaaa",
+      "price": 123,
+      "id": 12
+    },
+    {
+      "name": "aaaaaa",
+      "price": 123,
+      "id": 13
+    },
+    {
+      "name": "aaaaaa",
+      "price": 123,
+      "id": 14
+    },
+    {
+      "name": "zzzzzz",
+      "price": 123,
+      "id": 15
+    },
+    {
+      "name": "qqqqqq",
+      "price": 312,
+      "id": 16
+    },
+    {
+      "name": "wwwwww",
+      "price": 123123,
+      "id": 17
+    },
+    {
+      "name": "eeeeee",
+      "price": 123,
+      "id": 18
+    }
+  ]
+}

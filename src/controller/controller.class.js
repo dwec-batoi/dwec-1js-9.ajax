@@ -127,13 +127,12 @@ class Controller {
         // No comprobamos que los datos sean correctos porque lo hace la clase Store.
 
         try {
-            var product = this.store.addProduct(formData)
+            this.store.addProduct(formData, 
+                this.view.renderNewProduct, this._setProductListeners.bind(this));
         } catch (err) {
             this.view.renderErrorMessage(err);
             return;
         }
-        this.view.renderNewProduct(product);
-        this._setProductListeners(product);
         this.view.renderStoreImport(this.store.totalImport());
         this.view.renderAddForm(); 
     }

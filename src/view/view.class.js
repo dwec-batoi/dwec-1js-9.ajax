@@ -8,7 +8,7 @@ class View{
 
         const productUI = document.createElement('tr');
         productUI.id = 'prod-'+product.id;
-        productUI.innerHTML = this._productToTr(product);
+        productUI.innerHTML = _productToTr(product);
 
         productTBodyUI.appendChild(productUI);
     }
@@ -17,7 +17,7 @@ class View{
         // Buscamos el producto
         const productUI = document.getElementById('prod-'+product.id);
         if (productUI) {            // Si está lo modificamos
-            productUI.innerHTML = this._productToTr(product);
+            productUI.innerHTML = _productToTr(product);
         }
     }
 
@@ -83,30 +83,29 @@ class View{
         document.querySelector('#newprod-units').parentElement.classList.add('hide');
         document.querySelector('#new-prod button[type="submit"]').textContent = 'Añadir';
     }
-
-    _productToTr(product) {
-        return `
-            <td>${product.id}</td>
-            <td>${product.name}</td>
-            <td>${product.units}</td>
-            <td>${product.price}</td>
-            <td>${product.productImport().toFixed(2)} €</td>
-            <td>
-                <button class="btn btn-dark increase">
-                    <span class="material-icons">arrow_drop_up</span>
-                </button>
-                <button class="btn btn-dark decrease"${product.units?'':' disabled'}>
-                    <span class="material-icons">arrow_drop_down</span>
-                </button>
-                <button class="btn btn-dark edit">
-                    <span class="material-icons">edit</span>
-                </button>
-                <button class="btn btn-dark delete">
-                    <span class="material-icons">delete</span>
-                </button>
-            </td>`;
-    }    
 }
 
+function _productToTr(product) {
+    return `
+        <td>${product.id}</td>
+        <td>${product.name}</td>
+        <td>${product.units}</td>
+        <td>${product.price}</td>
+        <td>${product.productImport().toFixed(2)} €</td>
+        <td>
+            <button class="btn btn-dark increase">
+                <span class="material-icons">arrow_drop_up</span>
+            </button>
+            <button class="btn btn-dark decrease"${product.units?'':' disabled'}>
+                <span class="material-icons">arrow_drop_down</span>
+            </button>
+            <button class="btn btn-dark edit">
+                <span class="material-icons">edit</span>
+            </button>
+            <button class="btn btn-dark delete">
+                <span class="material-icons">delete</span>
+            </button>
+        </td>`;
+}    
 
 module.exports = View;

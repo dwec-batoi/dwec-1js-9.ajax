@@ -1,4 +1,5 @@
 const Product = require('./product.class');
+const SERVER = 'http://localhost:3000';
 
 class Store {
     constructor (id) {
@@ -10,11 +11,25 @@ class Store {
         return this.products.find((prod) => prod.id === id);
     }
 
-    addProduct(datosProd) {
-        datosProd.id = getId(this.products);
-        let newProd = new Product(datosProd.id, datosProd.name, datosProd.price, datosProd.units);
-        this.products.push(newProd);
-        return newProd;
+    addProduct(datosProd, renderProd, setListeners) {
+        const peticion = new XMLHttpRequest();
+        peticion.open('POST', SERVER + '/products');
+        peticion.setRequestHeader('Content-type', 'application/json');
+        peticion.send(JSON.stringify(datosProd));
+        peticion.addEventListener('load', () => {
+          if (peticion.status === 201) {
+            const datos = JSON.parse(peticion.responseText);
+            const newProd = new Product(datos.id, datos.name, datos.price, datos.units);
+            this.products.push(newProd);
+            renderProd(newProd);
+            setListeners(newProd);
+          } else {
+            throw "Error " + peticion.status + " (" + peticion.statusText + ") en la petición";
+          }
+        })
+        peticion.addEventListener('error', () => {
+            throw 'Error en la petición HTTP';
+        });
     }
 
     delProduct(id) {
